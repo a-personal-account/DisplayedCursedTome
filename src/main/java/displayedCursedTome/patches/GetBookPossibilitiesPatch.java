@@ -6,23 +6,26 @@ import com.megacrit.cardcrawl.events.city.CursedTome;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import javassist.CtBehavior;
 
+import java.util.ArrayList;
+
 @SpirePatch(clz = CursedTome.class, method = "randomBook")
-public class ObtainBookPatch {
+public class GetBookPossibilitiesPatch {
     @SpireInsertPatch(
             locator = Locator.class,
-            localvars={"r"}
+            localvars={"possibleBooks"}
     )
-    public static void Insert(CursedTome __instance, AbstractRelic r) {
-        AbstractDungeon.combatRewardScreen.clear();
-        AbstractDungeon.getCurrRoom().rewards.clear();
-        r.instantObtain();
-        DisplayBookPatch.book = null;
+    public static SpireReturn<Void> Insert(CursedTome __instance, ArrayList<AbstractRelic> possibleBooks) {
+        if(DisplayBookPatch.book == null) {
+            DisplayBookPatch.book = possibleBooks.get(AbstractDungeon.miscRng.copy().random(possibleBooks.size() - 1));
+            return SpireReturn.Return(null);
+        }
+        return SpireReturn.Continue();
     }
 
     private static class Locator extends SpireInsertLocator {
         @Override
         public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
-            Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractDungeon.class, "combatRewardScreen");
+            Matcher finalMatcher = new Matcher.FieldAccessMatcher(AbstractDungeon.class, "miscRng");
             return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
         }
     }

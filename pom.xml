@@ -6,7 +6,7 @@
     <groupId>UpdateBodyText</groupId>
     <artifactId>displayedcursedtome</artifactId>
     <name>Displayed Cursed Tome</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>It now displays which book you're gonna get in the necronomicon event before spending the 10 extra life on the *take* option.</description>
 
     <properties>
